@@ -1,5 +1,4 @@
 from Vector import Vector
-from typing import List
 
 
 class Matrix:
@@ -34,9 +33,9 @@ class Matrix:
     def __pow__(self, power, modulo=None):
         if modulo:
             raise ValueError("Matrix modulo isn't well defined")
-        m = self.Identity(len(self))
+        m = Matrix.Identity(len(self))
         for i in range(power):
-            m *= m
+            m *= self
         return m
 
     def __getitem__(self, key):
@@ -50,6 +49,9 @@ class Matrix:
 
     def is_square(self):
         return len(self.vectors) == len(self.vectors[0])
+
+    def gauss_jordan_elimination(self):
+        pass
 
     def determinant(self):
         if not self.is_square():
@@ -89,12 +91,22 @@ class Matrix:
             s += '\n'
         return s
 
-    def copy(self):
-        return Matrix(self.vectors)
-
     @staticmethod
     def Identity(length):
         vectors = []
         for i in range(length):
             vectors.append(Vector.Vector.Ei(length, i))
         return Matrix(vectors)
+
+    def __copy__(self):
+        return Matrix(self.vectors)
+
+    def trace(self):
+        if self.is_square():
+            return sum(self[i][i] for i in range(len(self)))
+
+    def transpose(self):
+        new_vectors = []
+        for i in range(len(self.vectors[0])):
+            new_vectors.append(Vector.Vector(*[v[i] for v in self.vectors]))
+        return Matrix(new_vectors)
