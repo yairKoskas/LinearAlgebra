@@ -41,6 +41,13 @@ class Vector:
     def __setitem__(self, key, value):
         self.values[key] = value
 
+    @staticmethod
+    def Ei(size, i):
+        values = []
+        for j in range(size):
+            values.append(0 if i != j else 1)
+        return Vector(*values)
+
 
 def gaussian_lattice_reduction(v1, v2):
     while True:
