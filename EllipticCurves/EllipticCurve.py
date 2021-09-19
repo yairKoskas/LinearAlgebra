@@ -1,10 +1,17 @@
 import hashlib
 from typing import Union
+from random import randint
 from Crypto.Util.number import inverse
 
 
+class PointNotOnCurveError(Exception):
+    def __init__(self, message="Point isn't on curve"):
+        self.message = message
+        super().__init__(self.message)
+
+
 class EllipticCurve:
-    def __init__(self, a, b, p=None):
+    def __init__(self, a: int, b: int, p=None):
         self.a = a
         self.b = b
         self.p = p
@@ -17,7 +24,8 @@ class EPoint:
     def __init__(self, x: Union[int, str], y: Union[int, str], ecurve: EllipticCurve):
         if ecurve.p:
             if isinstance(x, int):
-                assert (x ** 3 + ecurve.a * x + ecurve.b) % ecurve.p == (y ** 2) % ecurve.p, "Point isn't on curve"
+                if not ((x ** 3 + ecurve.a * x + ecurve.b) % ecurve.p == (y ** 2) % ecurve.p):
+                    raise PointNotOnCurveError()
                 self.x = x % ecurve.p
                 self.y = y % ecurve.p
             else:
@@ -25,7 +33,8 @@ class EPoint:
                 self.y = y
         else:
             if isinstance(x, int):
-                assert x ** 3 + ecurve.a * x + ecurve.b == y ** 2, "Point isn't on curve"
+                if not (x ** 3 + ecurve.a * x + ecurve.b == y ** 2):
+                    raise PointNotOnCurveError()
             self.x = x
             self.y = y
         self.ecurve = ecurve
@@ -64,3 +73,7 @@ class EPoint:
 
     def __copy__(self):
         return EPoint(**{'x': self.x, 'y': self.y, 'ecurve': self.ecurve})
+
+
+e = EllipticCurve(2, 3, 5)
+p = EPoint(0, 1, e)
