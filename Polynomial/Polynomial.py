@@ -5,7 +5,9 @@ import numpy as np
 
 
 class Polynomial:
-    def __init__(self, powers: Tuple[int, ...], coefficients: Tuple[Union[float, int], ...]):
+    def __init__(self, coefficients: Tuple[Union[float, int], ...], powers: Tuple[int, ...] = None):
+        if powers is None:
+            powers = tuple(range(len(coefficients)))
         if len(set(powers)) != len(powers):
             raise ValueError("Duplicate powers")
         if len(powers) != len(coefficients):
@@ -25,20 +27,20 @@ class Polynomial:
         new_polynomial_power_coefficient_dict: Dict[int, float] = dict(list(s.items()) + list(o.items()) +
                                                                        [(k, s[k] + o[k]) for k in set(s) & set(o)])
 
-        return Polynomial(tuple(new_polynomial_power_coefficient_dict.keys()),
-                          tuple(new_polynomial_power_coefficient_dict.values()))
+        return Polynomial(tuple(new_polynomial_power_coefficient_dict.values()),
+                          tuple(new_polynomial_power_coefficient_dict.keys()))
 
     def __sub__(self, other: Polynomial):
         return self + (-other)
 
     def __mul__(self, other: Union[Polynomial, int]):
-        p = self.__copy__()
-        if isinstance(other, int):
-            for pow, cof in p.power_coefficient_dict.items():
-                p.power_coefficient_dict[pow] = cof * other
-            return p
+        poly = self.__copy__()
+        if isinstance(other, int) or isinstance(other, float):
+            for power, coeff in poly.power_coefficient_dict.items():
+                poly.power_coefficient_dict[power] = coeff * other
+            return poly
 
-        p = Polynomial((0,), (0,))
+        poly = Polynomial((0,), (0,))
 
         r1 = max(self.powers) if isinstance(self.powers, tuple) else self.powers
         r2 = max(other.powers) if isinstance(other.powers, tuple) else other.powers
@@ -48,14 +50,14 @@ class Polynomial:
             for j in range(i + 1):
                 p = self.power_coefficient_dict.get(j, 0)
                 q = other.power_coefficient_dict.get(i - j, 0)
-                p += Polynomial((i,), (p * q,))
-        return p
+                poly += Polynomial((p * q,), (i,))
+        return poly
 
     def __rmul__(self, other):
         return self * other
 
     def __neg__(self):
-        return self * Polynomial((0,), (-1,))
+        return self * Polynomial((-1,), (0,))
 
     def __eq__(self, other):
         p1 = {k: v for k, v in self.power_coefficient_dict.items() if v != 0}
@@ -64,12 +66,14 @@ class Polynomial:
         return p1 == p2
 
     def __copy__(self):
-        return Polynomial(self.powers, self.coefficients)
+        return Polynomial(self.coefficients, self.powers)
 
     def __str__(self):
         chunks = []
         self.power_coefficient_dict = {k: v for k, v in sorted(self.power_coefficient_dict.items(),
-                                                               key=lambda item: item[0])}
+                                                               key=lambda item: item[0]) if v != 0}
+        if self.power_coefficient_dict == {}:
+            return "0"
         for power in self.powers:
             coeff = self.power_coefficient_dict[power]
             if coeff == 0:
