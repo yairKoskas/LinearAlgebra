@@ -94,7 +94,3 @@ class Polynomial:
         if 0 not in self.power_coefficient_dict or self.power_coefficient_dict[0] == 0:
             zeros = list(zeros) + [0]
         return tuple(zeros)
-
-p = Polynomial((0,7), (3,5))
-print(p)
-print(3*p)
