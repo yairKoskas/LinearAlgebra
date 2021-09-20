@@ -31,7 +31,13 @@ class Polynomial:
     def __sub__(self, other: Polynomial):
         return self + (-other)
 
-    def __mul__(self, other: Polynomial):
+    def __mul__(self, other: Union[Polynomial, int]):
+        p = self.__copy__()
+        if isinstance(other, int):
+            for pow, cof in p.power_coefficient_dict.items():
+                p.power_coefficient_dict[pow] = cof * other
+            return p
+
         p = Polynomial((0,), (0,))
 
         r1 = max(self.powers) if isinstance(self.powers, tuple) else self.powers
@@ -44,6 +50,9 @@ class Polynomial:
                 q = other.power_coefficient_dict.get(i - j, 0)
                 p += Polynomial((i,), (p * q,))
         return p
+
+    def __rmul__(self, other):
+        return self * other
 
     def __neg__(self):
         return self * Polynomial((0,), (-1,))
@@ -85,3 +94,7 @@ class Polynomial:
         if 0 not in self.power_coefficient_dict or self.power_coefficient_dict[0] == 0:
             zeros = list(zeros) + [0]
         return tuple(zeros)
+
+p = Polynomial((0,7), (3,5))
+print(p)
+print(3*p)
