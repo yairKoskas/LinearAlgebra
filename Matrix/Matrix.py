@@ -124,4 +124,4 @@ class Matrix:
         return Matrix(new_vectors)
 
     def rows(self):
-        return self.transpose().vectors
+        return [Vector.Vector(*[v[i] for v in self.vectors]) for i in range(len(self.vectors))]
