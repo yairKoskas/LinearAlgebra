@@ -1,3 +1,5 @@
+import math
+
 from Vector import Vector
 
 
@@ -63,7 +65,24 @@ class Matrix:
         return len(self.vectors) == len(self.vectors[0])
 
     def gauss_jordan_elimination(self):
-        pass
+        m = self.__copy__()
+        for curr_vec in range(len(m)):
+            if m[curr_vec] == 0:
+                continue
+            else:
+                try:
+                    # in case all values are 0
+                    pivot = min([i for i in range(len(m[curr_vec])) if m[curr_vec][i] != 0 and i >= curr_vec])
+                except ValueError:
+                    continue
+                m.swap_rows(curr_vec, pivot)
+                m.mult_row(curr_vec, 1 / m[curr_vec][curr_vec])
+                for i in range(0, len(self.vectors[0])):
+                    if curr_vec == i:
+                        continue
+                    m.add_rows(curr_vec, i, -m[curr_vec][i])
+                    print(m)
+        return m
 
     def determinant(self):
         if not self.is_square():
@@ -125,3 +144,19 @@ class Matrix:
 
     def rows(self):
         return [Vector.Vector(*[v[i] for v in self.vectors]) for i in range(len(self.vectors))]
+
+    def swap_rows(self, curr_vec, pivot):
+        for v in self.vectors:
+            v[curr_vec], v[pivot] = v[pivot], v[curr_vec]
+
+    def mult_row(self, row, value):
+        for v in self.vectors:
+            v[row] *= value
+            if int(v[row]) == math.floor(v[row]):
+                v[row] = int(v[row])
+
+    def add_rows(self, row1, row2, alpha=1):
+        for v in self.vectors:
+            v[row2] += v[row1] * alpha
+            if int(v[row2]) == math.floor(v[row2]):
+                v[row2] = int(v[row2])

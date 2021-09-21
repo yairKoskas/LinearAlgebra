@@ -35,6 +35,11 @@ class Vector:
     def __getitem__(self, key):
         return self.values[key]
 
+    def __eq__(self, other):
+        if isinstance(other, (float, int)):
+            return self.values == [other for _ in range(len(self))]
+        return self.values == other.values
+
     def size(self):
         return math.sqrt(sum([i ** 2 for i in self.values]))
 
