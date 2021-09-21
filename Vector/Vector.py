@@ -40,6 +40,9 @@ class Vector:
             return self.values == [other for _ in range(len(self))]
         return self.values == other.values
 
+    def __copy__(self):
+        return self.values.copy()
+
     def size(self):
         return math.sqrt(sum([i ** 2 for i in self.values]))
 
