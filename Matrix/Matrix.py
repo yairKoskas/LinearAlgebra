@@ -191,7 +191,7 @@ class Matrix:
 
     def inverse(self):
         if self.determinant() == 0:
-            raise ValueError("Matrix isn't invertible")
+            return None
         temp = Matrix(self.vectors + Matrix.Identity(len(self.vectors)).vectors)
         temp = temp.gauss_jordan_elimination()
         return Matrix(temp.vectors[len(self.vectors):])
