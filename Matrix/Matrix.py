@@ -22,10 +22,11 @@ class Matrix:
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):
-            temp = other
-            other = self.Identity(len(self))
-            for i in range(len(self)):
-                other[i][i] *= temp
+            temp = self.__copy__()
+            for i in range(len(temp)):
+                for j in range(len(temp[0])):
+                    temp[i][j] *= other
+            return temp
         elif isinstance(other, Vector.Vector):
             if not len(self.vectors) == len(other):
                 raise ValueError("Matrix and vector sizes aren't compatible")
