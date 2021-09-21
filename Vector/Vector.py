@@ -48,6 +48,9 @@ class Vector:
             values.append(0 if i != j else 1)
         return Vector(*values)
 
+    def append(self, param):
+        self.values.append(param)
+
 
 def gaussian_lattice_reduction(v1, v2):
     while True:

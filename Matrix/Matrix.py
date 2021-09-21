@@ -24,11 +24,23 @@ class Matrix:
             other = self.Identity(len(self))
             for i in range(len(self)):
                 other[i][i] *= temp
-        m = Matrix.Zero(len(self))
-        for i in range(len(self)):
-            for j in range(len(self[0])):
-                m[j][i] = sum([self[i][k] * other[k][j] for k in range(len(self))])
-        return m
+        elif isinstance(other, Vector.Vector):
+            if not len(self.vectors) == len(other):
+                raise ValueError("Matrix and vector sizes aren't compatible")
+            out = Vector.Vector()
+            for row in self.rows():
+                out.append(sum([row[i] * other[i] for i in range(len(row))]))
+            return out
+        elif isinstance(other, Matrix):
+            if not len(self.vectors) == len(other.vectors[0]):
+                raise ValueError("Matrices sizes aren't compatible")
+            m = Matrix.Zero(len(self))
+            for i in range(len(self)):
+                for j in range(len(self[0])):
+                    m[j][i] = sum([self[i][k] * other[k][j] for k in range(len(self))])
+            return m
+        else:
+            raise TypeError(f'Matrix multiplication with {type(other)} isn\'t defined')
 
     def __pow__(self, power, modulo=None):
         if modulo:
@@ -110,3 +122,6 @@ class Matrix:
         for i in range(len(self.vectors[0])):
             new_vectors.append(Vector.Vector(*[v[i] for v in self.vectors]))
         return Matrix(new_vectors)
+
+    def rows(self):
+        return [Vector.Vector(*[v[i] for v in self.vectors]) for i in range(len(self.vectors))]
