@@ -82,7 +82,6 @@ class Matrix:
                     if curr_vec == i:
                         continue
                     m.add_rows(curr_vec, i, -m[curr_vec][i])
-                    print(m)
         return m
 
     def determinant(self):
@@ -131,7 +130,7 @@ class Matrix:
         return Matrix(vectors)
 
     def __copy__(self):
-        return Matrix(self.vectors)
+        return Matrix(list(self.vectors))
 
     def trace(self):
         if self.is_square():
@@ -144,7 +143,7 @@ class Matrix:
         return Matrix(new_vectors)
 
     def rows(self):
-        return [Vector.Vector(*[v[i] for v in self.vectors]) for i in range(len(self.vectors))]
+        return [Vector.Vector(*[v[i] for v in self.vectors]) for i in range(len(self.vectors[0]))]
 
     def swap_rows(self, curr_vec, pivot):
         for v in self.vectors:
@@ -161,3 +160,28 @@ class Matrix:
             v[row2] += v[row1] * alpha
             if int(v[row2]) == math.floor(v[row2]):
                 v[row2] = int(v[row2])
+
+    def solve(self, vec: Vector):
+        solution = []
+        if self.is_square() and self.determinant() != 0:
+            # solve by kramer's rule
+            det = self.determinant()
+            for i in range(len(self)):
+                m = self.__copy__()
+                m.vectors[i] = vec
+                solution.append(m.determinant() / det)
+        else:
+            vectors = list(self.vectors)
+            vectors.append(vec)
+            m = Matrix(vectors).gauss_jordan_elimination()
+            for row in m.rows():
+                # if there's a zeroed out row with non-zero value in the solution vector
+                if row[:-1].count(0) == len(row[:-1]) and row[-1] != 0:
+                    return None
+            # there's a solution or infinite ones
+            for row in m.rows():
+                if row == 0:
+                    solution.append(0)  # just for an example solution
+                else:
+                    solution.append(row[-1])
+        return solution
