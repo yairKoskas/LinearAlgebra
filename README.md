@@ -11,7 +11,7 @@
 - [ ] Gaussian elimination
 - [ ] Rank and null space finding
 ### Polynom:
-- [ ] Base structure, with addition, scalar and polynom multiplication
+- [x] Base structure, with addition, scalar and polynom multiplication
 ### Linear Transformations:
 - [ ] Agree on design and implement base structure
 
