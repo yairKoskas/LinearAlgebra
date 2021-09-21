@@ -152,7 +152,7 @@ class Matrix:
         for v in self.vectors:
             v[curr_vec], v[pivot] = v[pivot], v[curr_vec]
 
-    def mult_row(self, row: int, value: float):  # What is this?
+    def mult_row(self, row: int, value: float):
         for v in self.vectors:
             v[row] *= value
             if int(v[row]) == math.ceil(v[row]):
