@@ -197,7 +197,7 @@ class Matrix:
         return Matrix(temp.vectors[len(self.vectors):])
 
     def rank(self):
-        temp = Matrix(self.vectors.copy())
+        temp = Matrix(list(self.vectors))
         temp = temp.gauss_jordan_elimination()
         c = 0
         for v in temp.transpose().vectors:
