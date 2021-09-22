@@ -35,6 +35,9 @@ class Vector:
     def __getitem__(self, key):
         return self.values[key]
 
+    def __copy__(self):
+        return self.values.copy()
+
     def __eq__(self, other):
         if isinstance(other, (float, int)):
             return self.values == [other for _ in range(len(self))]

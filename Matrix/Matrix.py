@@ -195,3 +195,12 @@ class Matrix:
         temp = Matrix(self.vectors + Matrix.Identity(len(self.vectors)).vectors)
         temp = temp.gauss_jordan_elimination()
         return Matrix(temp.vectors[len(self.vectors):])
+
+    def rank(self):
+        temp = Matrix(self.vectors.copy())
+        temp = temp.gauss_jordan_elimination()
+        c = 0
+        for v in temp.transpose().vectors:
+            if v != Vector.Vector(*[0 for _ in range(len(v))]):
+                c += 1
+        return c
