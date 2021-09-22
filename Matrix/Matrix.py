@@ -199,8 +199,4 @@ class Matrix:
     def rank(self):
         temp = Matrix(list(self.vectors))
         temp = temp.gauss_jordan_elimination()
-        c = 0
-        for v in temp.transpose().vectors:
-            if v != Vector.Vector(*[0 for _ in range(len(v))]):
-                c += 1
-        return c
+        return sum(v != 0 for v in temp.transpose().vectors)

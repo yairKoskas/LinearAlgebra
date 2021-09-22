@@ -36,7 +36,7 @@ class Vector:
         return self.values[key]
 
     def __copy__(self):
-        return self.values.copy()
+        return Vector(*self.values.copy())
 
     def __eq__(self, other):
         if isinstance(other, (float, int)):
