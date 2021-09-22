@@ -1,11 +1,10 @@
 import math
-from typing import List, Union
 
 from Vector import Vector
 
 
 class Matrix:
-    def __init__(self, args: Union[List[Vector.Vector], int]):
+    def __init__(self, args):
         if isinstance(args, list):
             for i in args:
                 if not len(i) == len(args[0]):
@@ -18,10 +17,8 @@ class Matrix:
             self.vectors = vectors
 
     def __add__(self, m):
-        if all(isinstance(u, Vector.Vector) and isinstance(v, Vector.Vector) for u, v in zip(m.vectors, self.vectors)):
-            new_vectors = [v + u for v, u in zip(self.vectors, m.vectors)]
-            return Matrix(new_vectors)
-        raise TypeError("Vector isn't the right type")
+        new_vectors = [v + u for v, u in zip(self.vectors, m.vectors)]
+        return Matrix(new_vectors)
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):
@@ -133,7 +130,7 @@ class Matrix:
         return Matrix(vectors)
 
     def __copy__(self):
-        return Matrix(list(v.__copy__() for v in self.vectors))
+        return Matrix(list(self.vectors))
 
     def trace(self):
         if self.is_square():
@@ -152,16 +149,16 @@ class Matrix:
         for v in self.vectors:
             v[curr_vec], v[pivot] = v[pivot], v[curr_vec]
 
-    def mult_row(self, row: int, value: float):
+    def mult_row(self, row, value):
         for v in self.vectors:
             v[row] *= value
-            if int(v[row]) == math.ceil(v[row]):
+            if int(v[row]) == math.floor(v[row]):
                 v[row] = int(v[row])
 
-    def add_rows(self, row1: int, row2: int, alpha: float = 1):
+    def add_rows(self, row1, row2, alpha=1):
         for v in self.vectors:
             v[row2] += v[row1] * alpha
-            if int(v[row2]) == math.ceil(v[row2]):
+            if int(v[row2]) == math.floor(v[row2]):
                 v[row2] = int(v[row2])
 
     def solve(self, vec: Vector):
@@ -188,10 +185,3 @@ class Matrix:
                 else:
                     solution.append(row[-1])
         return solution
-
-    def inverse(self):
-        if self.determinant() == 0:
-            return None
-        temp = Matrix(self.vectors + Matrix.Identity(len(self.vectors)).vectors)
-        temp = temp.gauss_jordan_elimination()
-        return Matrix(temp.vectors[len(self.vectors):])
