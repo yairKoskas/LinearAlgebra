@@ -195,3 +195,8 @@ class Matrix:
         temp = Matrix(self.vectors + Matrix.Identity(len(self.vectors)).vectors)
         temp = temp.gauss_jordan_elimination()
         return Matrix(temp.vectors[len(self.vectors):])
+
+    def rank(self):
+        temp = Matrix(list(self.vectors))
+        temp = temp.gauss_jordan_elimination()
+        return sum(v != 0 for v in temp.transpose().vectors)
