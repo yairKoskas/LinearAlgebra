@@ -152,13 +152,13 @@ class Matrix:
     def mult_row(self, row, value):
         for v in self.vectors:
             v[row] *= value
-            if int(v[row]) == math.floor(v[row]):
+            if float(v[row]).is_integer():
                 v[row] = int(v[row])
 
     def add_rows(self, row1, row2, alpha=1):
         for v in self.vectors:
             v[row2] += v[row1] * alpha
-            if int(v[row2]) == math.floor(v[row2]):
+            if float(v[row2]).is_integer():
                 v[row2] = int(v[row2])
 
     def solve(self, vec: Vector):
